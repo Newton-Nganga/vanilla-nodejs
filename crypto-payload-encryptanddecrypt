@@ -1,0 +1,32 @@
+const crypto=require('crypto')
+const algorithm = 'aes-256-cbc';
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(16);
+const apiUrl = 'https://example.com/api/endpoint';
+
+function encryptPayload(payload, key, iv) {
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encryptedPayload = cipher.update(JSON.stringify(payload), 'utf8', 'hex');
+  encryptedPayload += cipher.final('hex');
+  return encryptedPayload;
+}
+
+//this fuction would also need the encryption key and iv
+function decryptPayload(encryptedPayload) {
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
+  let decryptedPayload = decipher.update(encryptedPayload, 'hex', 'utf8');
+  decryptedPayload += decipher.final('utf8');
+  return JSON.parse(decryptedPayload);
+}
+
+data ={
+  username: "Newton Nganga",
+  email:"nganga7newt@gmail.com",
+  gender:"Male",
+  profession:"Software engineer"
+}
+
+const encryptedData = encryptPayload(data,key,iv)
+const decryptedData = decryptPayload(encryptedData)
+console.log("Encrypted data string :",encryptedData)
+console.log("Decrypted data string :",decryptedData)
